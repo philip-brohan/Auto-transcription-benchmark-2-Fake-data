@@ -12,9 +12,4 @@ for idx in range(10000):
     fn = "%s/%04d.png" % (image_dir, idx)
     if os.path.exists(fn):
         continue
-    f.write(
-        (
-            './make_image_data_pair.py --docn="%04d"\n'
-        )
-        % idx
-    )
+    f.write(('./make_image_data_pair.py --docn="%04d"\n') % idx)
