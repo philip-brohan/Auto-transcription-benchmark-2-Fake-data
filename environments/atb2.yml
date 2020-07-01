@@ -1,0 +1,9 @@
+name: atb2
+channels:
+  - default
+  - conda-forge
+dependencies:
+  - python=3.7
+  - matplotlib=3.2.*
+# Optional, code formatter
+  - black
