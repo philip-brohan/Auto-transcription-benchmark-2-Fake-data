@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting started &#8212; Auto-transcription benchmark 2: Fake data</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fake images and data" href="examples.html" />
+    <link rel="prev" title="Auto-transcription benchmark 2: Fake data" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples.html" title="Fake images and data"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Auto-transcription benchmark 2: Fake data"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OCR-fake</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Getting started</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
+<p>This dataset is kept under version control in a <a class="reference external" href="https://en.wikipedia.org/wiki/Git">git repository</a>. The repository is hosted on <a class="reference external" href="https://github.com/">GitHub</a> (and the documentation made with <a class="reference external" href="https://pages.github.com/">GitHub Pages</a>). The repository is <a class="reference external" href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data">https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data</a>.</p>
+<p>If you are familiar with GitHub, you already know what to do (fork or clone <a class="reference external" href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data">the repository</a>): If you’d prefer not to bother with that, you can download the whole thing as <a class="reference external" href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data/archive/master.zip">a zip file</a>.</p>
+<p>As well as downloading the scripts, some setup is necessary to run them successfully:</p>
+<p>These scripts need to know where to put their output files. They rely on an environment variable <code class="docutils literal notranslate"><span class="pre">SCRATCH</span></code> - set this variable to a directory with plenty of free disc space.</p>
+<p>These scripts will only work in a <a class="reference external" href="https://www.python.org/">python</a> environment with the appropriate python version and libraries available. I use <a class="reference external" href="https://docs.conda.io/en/latest/">conda</a> to manage the required python environment - which is specified in a yaml file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">name</span><span class="p">:</span> <span class="n">atb2</span>
+<span class="n">channels</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">default</span>
+  <span class="o">-</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<span class="n">dependencies</span><span class="p">:</span>
+  <span class="o">-</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.7</span>
+  <span class="o">-</span> <span class="n">matplotlib</span><span class="o">=</span><span class="mf">3.2</span><span class="o">.*</span>
+<span class="c1"># Tool to make the docs</span>
+  <span class="o">-</span> <span class="n">sphinx</span><span class="o">=</span><span class="mf">3.1</span><span class="o">.*</span>
+<span class="c1"># Optional, code formatter</span>
+  <span class="o">-</span> <span class="n">black</span>
+</pre></div>
+</div>
+<p>Install <a class="reference external" href="https://docs.conda.io/en/latest/">anaconda or miniconda</a>, <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/getting-started.html#managing-envs">create and activate the environment in that yaml file</a>, and all the scripts in this repository should run successfully.</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/rrb.png" alt="Logo"/>
+            </a></p>
+<h3><a href="index.html">Table Of Contents</a></h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Getting started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Fake images and data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Scripts to make the dataset</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="credits.html">Authors and acknowledgements</a></li>
+</ul>
+<h3><a href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data">Get the data</a></h3>
+
+<ul>
+<li><a href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data"
+           rel="nofollow">Github repository</a></li>
+<li><a href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data/archive/master.zip"
+           rel="nofollow">Zip file</a></li>
+</ul>
+
+<h3>Found a bug, or have a suggestion?</h3>
+
+Please <a href="https://github.com/philip-brohan/Auto-transcription-benchmark-2-Fake-data/issues/new">raise an issue</a>.
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="examples.html" title="Fake images and data"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="Auto-transcription benchmark 2: Fake data"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">OCR-fake</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Getting started</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>
