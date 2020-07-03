@@ -139,7 +139,7 @@ html_theme = 'sphinxdoc'
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
 #
-html_title = u'Auto-transcription benchmark 1: Fort William pressures'
+html_title = u'Auto-transcription benchmark 2: Fake data'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #
@@ -148,7 +148,7 @@ html_short_title = u'OCR-fake'
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
 #
-html_logo = 'logo/rrb.png'
+html_logo = 'logo/rrb2.png'
 
 # The name of an image file (relative to this directory) to use as a favicon of
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32

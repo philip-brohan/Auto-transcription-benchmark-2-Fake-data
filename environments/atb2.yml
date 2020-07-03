@@ -5,5 +5,7 @@ channels:
 dependencies:
   - python=3.7
   - matplotlib=3.2.*
+# Tool to make the docs
+  - sphinx=3.1.*
 # Optional, code formatter
   - black
