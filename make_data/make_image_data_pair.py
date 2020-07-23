@@ -276,9 +276,6 @@ for yri in range(10):
         ydata.append(mdata)
     rdata.append(ydata)
 
-# Store the data
-with open("%s/numbers/%s.pkl" % (args.opdir, args.docn), "wb") as pf:
-    pickle.dump(rdata, pf)
 
 # Fill out the table with the random numbers
 for yri in range(10):
@@ -296,17 +293,24 @@ for yri in range(10):
             / (len(months) + 1)
         )
         inr = rdata[yri][mni][0] + rdata[yri][mni][1] / 10 + rdata[yri][mni][2] / 100
+        strv = "%4.2f" % inr
         ax_full.text(
             tp[0],
             lft[1],
-            "%4.2f" % inr,
+            strv,
             fontsize=imp["fontSize"],
             horizontalalignment="center",
             verticalalignment="center",
         )
+        # Make certain numbers are identical to printed version
+        rdata[yri][mni][0] = int(strv[0])
+        rdata[yri][mni][1] = int(strv[2])
+        rdata[yri][mni][2] = int(strv[3])
+       
 
 # Add the monthly means
 tp = topAt(1.0 - imp["meansWidth"] / 2)
+rdata.append([])
 for mni in range(12):
     lft = leftAt(
         1.0
@@ -319,17 +323,24 @@ for mni in range(12):
     for yri in range(10):
         inr += rdata[yri][mni][0] + rdata[yri][mni][1] / 10 + rdata[yri][mni][2] / 100
     inr /= 10
+    strv = "%4.2f" % inr
     ax_full.text(
         tp[0],
         lft[1],
-        "%4.2f" % inr,
+        strv,
         fontsize=imp["fontSize"],
         horizontalalignment="center",
         verticalalignment="center",
     )
+    mm =[]
+    mm.append(int(strv[0]))
+    mm.append(int(strv[2]))
+    mm.append(int(strv[3]))
+    rdata[10].append(mm)
 
 # Add the annual totals
 lft = leftAt(imp["totalsHeight"] / 2)
+rdata.append([])
 for yri in range(10):
     x = (
         imp["monthsWidth"]
@@ -339,14 +350,24 @@ for yri in range(10):
     inr = 0.0
     for mni in range(12):
         inr += rdata[yri][mni][0] + rdata[yri][mni][1] / 10 + rdata[yri][mni][2] / 100
+    strv = "%5.2f" % inr
     ax_full.text(
         tp[0],
         lft[1],
-        "%5.2f" % inr,
+        strv,
         fontsize=imp["fontSize"],
         horizontalalignment="center",
         verticalalignment="center",
     )
-
+    at = []
+    at.append(int(strv[0]))
+    at.append(int(strv[1]))
+    at.append(int(strv[3]))
+    at.append(int(strv[4]))
+    rdata[11].append(at)
 
 fig.savefig("%s/images/%s.png" % (args.opdir, args.docn))
+
+# Store the data
+with open("%s/numbers/%s.pkl" % (args.opdir, args.docn), "wb") as pf:
+    pickle.dump(rdata, pf)
