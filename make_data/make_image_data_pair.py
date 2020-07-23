@@ -323,7 +323,7 @@ for mni in range(12):
     for yri in range(10):
         inr += rdata[yri][mni][0] + rdata[yri][mni][1] / 10 + rdata[yri][mni][2] / 100
     inr /= 10
-    strv = "%4.2f" % inr
+    strv = "%04.2f" % inr
     ax_full.text(
         tp[0],
         lft[1],
@@ -350,7 +350,8 @@ for yri in range(10):
     inr = 0.0
     for mni in range(12):
         inr += rdata[yri][mni][0] + rdata[yri][mni][1] / 10 + rdata[yri][mni][2] / 100
-    strv = "%5.2f" % inr
+    if inr>99: inr=inr%100
+    strv = "%05.2f" % inr
     ax_full.text(
         tp[0],
         lft[1],
