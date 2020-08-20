@@ -79,7 +79,7 @@ class tyrImage:
     # Must call makeImage before calling this
     #  (bad design but not worth fixing).
     def makeNumbers(self):
-        if not os.path.isdir("%s/" % self.opdir):
+        if not os.path.isdir("%s/numbers" % self.opdir):
             os.makedirs("%s/numbers" % self.opdir)
         with open("%s/numbers/%s.pkl" % (self.opdir, self.docn), "wb") as pf:
             pickle.dump(self.rdata, pf)

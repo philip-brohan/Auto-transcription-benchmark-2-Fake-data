@@ -20,7 +20,6 @@ args = parser.parse_args()
 if args.opdir is None:
     args.opdir = ("%s/OCR-fake") % os.getenv("SCRATCH")
 
-ic = tyrImage(args.opdir,args.docn)
+ic = tyrImage(args.opdir, args.docn)
 ic.makeImage()
 ic.makeNumbers()
-
