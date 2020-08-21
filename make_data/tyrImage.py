@@ -37,7 +37,7 @@ class tyrImage:
 
         for key, value in kwargs.items():
             if hasattr(self, key):
-                setattr(self, key)
+                setattr(self, key, value)
             else:
                 raise ValueError("No parameter %s" % key)
 
