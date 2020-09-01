@@ -18,15 +18,16 @@ parser.add_argument(
 )
 parser.add_argument("--xshift", help="pixels", type=int, default=None, required=False)
 parser.add_argument("--yshift", help="pixels", type=int, default=None, required=False)
+parser.add_argument(
+    "--rotate", help="degrees clockwise", type=int, default=None, required=False
+)
 args = parser.parse_args()
 if args.opdir is None:
     args.opdir = ("%s/OCR-fake") % os.getenv("SCRATCH")
 
-kwargs={}
-if args.xshift is not None: 
-    kwargs['xshift'] = args.xshift
-if args.yshift is not None: 
-    kwargs['yshift'] = args.yshift
+# Pass all the image control options to image creation function
+a = vars(args)
+kwargs = {i: a[i] for i in a if i not in ["docn", "opdir"]}
 
 ic = tyrImage(args.opdir, args.docn, **kwargs)
 ic.makeImage()

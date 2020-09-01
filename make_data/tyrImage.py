@@ -1,6 +1,7 @@
 # Class encapsulating a fake rainfall data image
 
 import os
+import math
 import random
 import pickle
 import matplotlib
@@ -22,7 +23,7 @@ class tyrImage:
         self.yscale = 1.0
         self.xshift = 0.0  # pixels, +ve right
         self.yshift = 0.0  # pixels, +ve up
-        self.rotate = 0.0  # degrees clockwise (not yet implemented)
+        self.rotate = 0.0  # degrees clockwise
         self.linewidth = 1.0
         self.bgcolour = (1.0, 1.0, 1.0)
         self.fgcolour = (0.0, 0.0, 0.0)
@@ -37,7 +38,8 @@ class tyrImage:
 
         for key, value in kwargs.items():
             if hasattr(self, key):
-                setattr(self, key, value)
+                if value is not None:
+                    setattr(self, key, value)
             else:
                 raise ValueError("No parameter %s" % key)
 
@@ -87,7 +89,30 @@ class tyrImage:
     # Everything below this is an internal function you should not have to call directly
 
     # Calculate the grid geometry
-    #   currently ignores rotating
+
+    # Rotate by angle degrees clockwise
+    def gRotate(self, point, angle=None, origin=None):
+        if angle is None:
+            angle = self.rotate
+        if angle == 0:
+            return point
+        if origin is None:
+            origin = self.gCentre()
+        ox, oy = origin[0] * self.pageWidth, origin[1] * self.pageHeight
+        px, py = point[0] * self.pageWidth, point[1] * self.pageHeight
+        angle = math.radians(angle) * -1
+        qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+        qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+        return qx / self.pageWidth, qy / self.pageHeight
+
+    # Centre point of shifted grid
+    def gCentre(self):
+        return (
+            0.5 + self.xshift / self.pageWidth,
+            0.525 + self.yshift / self.pageHeight,
+        )
+
+    # Corners of grid
     def topLeft(self):
         return (
             0.07 + self.xshift / self.pageWidth,
@@ -140,23 +165,27 @@ class tyrImage:
             self.topRight()[1] * y + self.bottomRight()[1] * (1 - y),
         )
 
+    # Apply x and y offsets in rotated coordinates
+    def gOffset(self, point, xoffset=0, yoffset=0):
+        return self.gRotate([point[0] + xoffset.point[1] + yoffset], self.rotate, point)
+
     # Draw grid bounding box
     def drawBox(self, ax):
         ax.add_line(
             Line2D(
                 xdata=(
-                    self.topLeft()[0],
-                    self.topRight()[0],
-                    self.bottomRight()[0],
-                    self.bottomLeft()[0],
-                    self.topLeft()[0],
+                    self.gRotate(self.topLeft())[0],
+                    self.gRotate(self.topRight())[0],
+                    self.gRotate(self.bottomRight())[0],
+                    self.gRotate(self.bottomLeft())[0],
+                    self.gRotate(self.topLeft())[0],
                 ),
                 ydata=(
-                    self.topLeft()[1],
-                    self.topRight()[1],
-                    self.bottomRight()[1],
-                    self.bottomLeft()[1],
-                    self.topLeft()[1],
+                    self.gRotate(self.topLeft())[1],
+                    self.gRotate(self.topRight())[1],
+                    self.gRotate(self.bottomRight())[1],
+                    self.gRotate(self.bottomLeft())[1],
+                    self.gRotate(self.topLeft())[1],
                 ),
                 linestyle="solid",
                 linewidth=self.linewidth,
@@ -167,8 +196,8 @@ class tyrImage:
 
     # Draw the grid
     def drawGrid(self, ax):
-        lft = self.leftAt(1.0 - self.yearHeight)
-        rgt = self.rightAt(1.0 - self.yearHeight)
+        lft = self.gRotate(self.leftAt(1.0 - self.yearHeight))
+        rgt = self.gRotate(self.rightAt(1.0 - self.yearHeight))
         ax.add_line(
             Line2D(
                 xdata=(lft[0], rgt[0]),
@@ -179,8 +208,8 @@ class tyrImage:
                 zorder=1,
             )
         )
-        lft = self.leftAt(self.totalsHeight)
-        rgt = self.rightAt(self.totalsHeight)
+        lft = self.gRotate(self.leftAt(self.totalsHeight))
+        rgt = self.gRotate(self.rightAt(self.totalsHeight))
         ax.add_line(
             Line2D(
                 xdata=(lft[0], rgt[0]),
@@ -191,8 +220,8 @@ class tyrImage:
                 zorder=1,
             )
         )
-        tp = self.topAt(self.monthsWidth)
-        bm = self.bottomAt(self.monthsWidth)
+        tp = self.gRotate(self.topAt(self.monthsWidth))
+        bm = self.gRotate(self.bottomAt(self.monthsWidth))
         ax.add_line(
             Line2D(
                 xdata=(tp[0], bm[0]),
@@ -203,8 +232,8 @@ class tyrImage:
                 zorder=1,
             )
         )
-        tp = self.topAt(1.0 - self.meansWidth)
-        bm = self.bottomAt(1.0 - self.meansWidth)
+        tp = self.gRotate(self.topAt(1.0 - self.meansWidth))
+        bm = self.gRotate(self.bottomAt(1.0 - self.meansWidth))
         ax.add_line(
             Line2D(
                 xdata=(tp[0], bm[0]),
@@ -217,8 +246,8 @@ class tyrImage:
         )
         for yrl in range(1, 10):
             x = self.monthsWidth + yrl * (1.0 - self.meansWidth - self.monthsWidth) / 10
-            tp = self.topAt(x)
-            bm = self.bottomAt(x)
+            tp = self.gRotate(self.topAt(x))
+            bm = self.gRotate(self.bottomAt(x))
             ax.add_line(
                 Line2D(
                     xdata=(tp[0], bm[0]),
@@ -234,33 +263,39 @@ class tyrImage:
     def drawFixedText(self, ax):
         tp = self.topAt(self.monthsWidth / 2)
         lft = self.leftAt(1.0 - self.yearHeight / 2)
+        txp = self.gRotate([tp[0], lft[1]])
         ax.text(
-            tp[0],
-            lft[1],
+            txp[0],
+            txp[1],
             "Year",
             fontsize=self.fontSize,
             horizontalalignment="center",
             verticalalignment="center",
+            rotation=self.rotate * -1,
         )
         tp = self.topAt(1.0 - self.meansWidth / 2)
         lft = self.leftAt(1.0 - self.yearHeight / 2)
+        txp = self.gRotate([tp[0], lft[1]])
         ax.text(
-            tp[0],
-            lft[1],
+            txp[0],
+            txp[1],
             "Means",
             fontsize=self.fontSize,
             horizontalalignment="center",
             verticalalignment="center",
+            rotation=self.rotate * -1,
         )
         tp = self.topAt(self.monthsWidth / 2)
         lft = self.leftAt(self.totalsHeight / 2)
+        txp = self.gRotate([tp[0], lft[1]])
         ax.text(
-            tp[0],
-            lft[1],
+            txp[0],
+            txp[1],
             "Totals",
             fontsize=self.fontSize,
             horizontalalignment="center",
             verticalalignment="center",
+            rotation=self.rotate * -1,
         )
         months = (
             "January",
@@ -285,13 +320,16 @@ class tyrImage:
                 * (1.0 - self.yearHeight - self.totalsHeight)
                 / (len(months) + 1)
             )
+            txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                tp[0],
-                lft[1],
+                txp[0],
+                txp[1],
                 months[mdx],
                 fontsize=self.fontSize - 1,
                 horizontalalignment="left",
                 verticalalignment="center",
+                rotation=self.rotate * -1,
+                rotation_mode="anchor",
             )
         lft = self.leftAt(1.0 - self.yearHeight / 2)
         for ydx in range(10):
@@ -300,13 +338,15 @@ class tyrImage:
                 + (ydx + 0.5) * (1.0 - self.meansWidth - self.monthsWidth) / 10
             )
             tp = self.topAt(x)
+            txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                tp[0],
-                lft[1],
+                txp[0],
+                txp[1],
                 "%04d" % (self.year + ydx),
                 fontsize=self.fontSize,
                 horizontalalignment="center",
                 verticalalignment="center",
+                rotation=self.rotate * -1,
             )
 
     # Generate random numbers to fill out the data table
@@ -343,13 +383,15 @@ class tyrImage:
                     + self.rdata[yri][mni][2] / 100
                 )
                 strv = "%4.2f" % inr
+                txp = self.gRotate([tp[0], lft[1]])
                 ax.text(
-                    tp[0],
-                    lft[1],
+                    txp[0],
+                    txp[1],
                     strv,
                     fontsize=self.fontSize,
                     horizontalalignment="center",
                     verticalalignment="center",
+                    rotation=self.rotate * -1,
                 )
                 # Make certain numbers are identical to printed version
                 self.rdata[yri][mni][0] = int(strv[0])
@@ -375,13 +417,15 @@ class tyrImage:
                 )
             inr /= 10
             strv = "%04.2f" % inr
+            txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                tp[0],
-                lft[1],
+                txp[0],
+                txp[1],
                 strv,
                 fontsize=self.fontSize,
                 horizontalalignment="center",
                 verticalalignment="center",
+                rotation=self.rotate * -1,
             )
             mm = []
             mm.append(int(strv[0]))
@@ -409,13 +453,15 @@ class tyrImage:
             if inr > 99:
                 inr = inr % 100
             strv = "%05.2f" % inr
+            txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                tp[0],
-                lft[1],
+                txp[0],
+                txp[1],
                 strv,
                 fontsize=self.fontSize,
                 horizontalalignment="center",
                 verticalalignment="center",
+                rotation=self.rotate * -1,
             )
             at = []
             at.append(int(strv[0]))
