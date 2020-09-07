@@ -43,6 +43,12 @@ class tyrImage:
             else:
                 raise ValueError("No parameter %s" % key)
 
+    def dumpState(self):
+        if not os.path.isdir("%s/meta" % self.opdir):
+            os.makedirs("%s/meta" % self.opdir)
+        with open("%s/meta/%s.pkl" % (self.opdir, self.docn), "wb") as pf:
+            pickle.dump(vars(self), pf)
+
     def makeImage(self):
         fig = Figure(
             figsize=(self.pageWidth / 100, self.pageHeight / 100),
@@ -108,8 +114,8 @@ class tyrImage:
     # Centre point of shifted grid
     def gCentre(self):
         return (
-            0.5 + self.xshift / self.pageWidth,
-            0.525 + self.yshift / self.pageHeight,
+            0.5 + self.xshift / self.pageWidth + (self.xscale - 1) * 0.43,
+            0.525 + self.yshift / self.pageHeight - (self.yscale - 1) * 0.2,
         )
 
     # Corners of grid

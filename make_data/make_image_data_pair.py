@@ -19,7 +19,13 @@ parser.add_argument(
 parser.add_argument("--xshift", help="pixels", type=int, default=None, required=False)
 parser.add_argument("--yshift", help="pixels", type=int, default=None, required=False)
 parser.add_argument(
-    "--rotate", help="degrees clockwise", type=int, default=None, required=False
+    "--xscale", help="fraction", type=float, default=None, required=False
+)
+parser.add_argument(
+    "--yscale", help="fraction", type=float, default=None, required=False
+)
+parser.add_argument(
+    "--rotate", help="degrees clockwise", type=float, default=None, required=False
 )
 args = parser.parse_args()
 if args.opdir is None:
@@ -32,3 +38,4 @@ kwargs = {i: a[i] for i in a if i not in ["docn", "opdir"]}
 ic = tyrImage(args.opdir, args.docn, **kwargs)
 ic.makeImage()
 ic.makeNumbers()
+ic.dumpState()
