@@ -33,6 +33,11 @@ class tyrImage:
         self.meansWidth = 0.107  # Fractional width of means row
         self.fontSize = 10
         self.year = 1941
+        # Noise parameters
+        self.jitterFontSize = 0.0
+        self.jitterFontRotate = 0.0
+        self.jitterGridPoints = 0.0
+        self.jitterLineWidth = 0.0
 
         self.generateNumbers()
 
@@ -175,26 +180,47 @@ class tyrImage:
     def gOffset(self, point, xoffset=0, yoffset=0):
         return self.gRotate([point[0] + xoffset.point[1] + yoffset], self.rotate, point)
 
+    # Apply a perturbation to positions
+    def jitterPos(self):
+        if self.jitterGridPoints == 0:
+            return 0
+        return random.normalvariate(0, self.jitterGridPoints)
+
+    def jitterLW(self):
+        if self.jitterLineWidth == 0:
+            return 0
+        return random.normalvariate(0, self.jitterLineWidth)
+
+    def jitterFS(self):
+        if self.jitterFontSize == 0:
+            return 0
+        return random.normalvariate(0, self.jitterFontSize)
+
+    def jitterFR(self):
+        if self.jitterFontRotate == 0:
+            return 0
+        return random.normalvariate(0, self.jitterFontRotate)
+
     # Draw grid bounding box
     def drawBox(self, ax):
         ax.add_line(
             Line2D(
                 xdata=(
-                    self.gRotate(self.topLeft())[0],
-                    self.gRotate(self.topRight())[0],
-                    self.gRotate(self.bottomRight())[0],
-                    self.gRotate(self.bottomLeft())[0],
-                    self.gRotate(self.topLeft())[0],
+                    self.gRotate(self.topLeft())[0] + self.jitterPos(),
+                    self.gRotate(self.topRight())[0] + self.jitterPos(),
+                    self.gRotate(self.bottomRight())[0] + self.jitterPos(),
+                    self.gRotate(self.bottomLeft())[0] + self.jitterPos(),
+                    self.gRotate(self.topLeft())[0] + self.jitterPos(),
                 ),
                 ydata=(
-                    self.gRotate(self.topLeft())[1],
-                    self.gRotate(self.topRight())[1],
-                    self.gRotate(self.bottomRight())[1],
-                    self.gRotate(self.bottomLeft())[1],
-                    self.gRotate(self.topLeft())[1],
+                    self.gRotate(self.topLeft())[1] + self.jitterPos(),
+                    self.gRotate(self.topRight())[1] + self.jitterPos(),
+                    self.gRotate(self.bottomRight())[1] + self.jitterPos(),
+                    self.gRotate(self.bottomLeft())[1] + self.jitterPos(),
+                    self.gRotate(self.topLeft())[1] + self.jitterPos(),
                 ),
                 linestyle="solid",
-                linewidth=self.linewidth,
+                linewidth=self.linewidth + self.jitterLW(),
                 color=self.fgcolour,
                 zorder=1,
             )
@@ -206,10 +232,10 @@ class tyrImage:
         rgt = self.gRotate(self.rightAt(1.0 - self.yearHeight))
         ax.add_line(
             Line2D(
-                xdata=(lft[0], rgt[0]),
-                ydata=(lft[1], rgt[1]),
+                xdata=(lft[0] + self.jitterPos(), rgt[0] + self.jitterPos()),
+                ydata=(lft[1] + self.jitterPos(), rgt[1] + self.jitterPos()),
                 linestyle="solid",
-                linewidth=self.linewidth,
+                linewidth=self.linewidth + self.jitterLW(),
                 color=self.fgcolour,
                 zorder=1,
             )
@@ -218,10 +244,10 @@ class tyrImage:
         rgt = self.gRotate(self.rightAt(self.totalsHeight))
         ax.add_line(
             Line2D(
-                xdata=(lft[0], rgt[0]),
-                ydata=(lft[1], rgt[1]),
+                xdata=(lft[0] + self.jitterPos(), rgt[0] + self.jitterPos()),
+                ydata=(lft[1] + self.jitterPos(), rgt[1] + self.jitterPos()),
                 linestyle="solid",
-                linewidth=self.linewidth,
+                linewidth=self.linewidth + self.jitterLW(),
                 color=self.fgcolour,
                 zorder=1,
             )
@@ -230,8 +256,8 @@ class tyrImage:
         bm = self.gRotate(self.bottomAt(self.monthsWidth))
         ax.add_line(
             Line2D(
-                xdata=(tp[0], bm[0]),
-                ydata=(tp[1], bm[1]),
+                xdata=(tp[0] + self.jitterPos(), bm[0] + self.jitterPos()),
+                ydata=(tp[1] + self.jitterPos(), bm[1] + self.jitterPos()),
                 linestyle="solid",
                 linewidth=self.linewidth,
                 color=self.fgcolour,
@@ -242,10 +268,10 @@ class tyrImage:
         bm = self.gRotate(self.bottomAt(1.0 - self.meansWidth))
         ax.add_line(
             Line2D(
-                xdata=(tp[0], bm[0]),
-                ydata=(tp[1], bm[1]),
+                xdata=(tp[0] + self.jitterPos(), bm[0] + self.jitterPos()),
+                ydata=(tp[1] + self.jitterPos(), bm[1] + self.jitterPos()),
                 linestyle="solid",
-                linewidth=self.linewidth,
+                linewidth=self.linewidth + self.jitterLW(),
                 color=self.fgcolour,
                 zorder=1,
             )
@@ -256,10 +282,10 @@ class tyrImage:
             bm = self.gRotate(self.bottomAt(x))
             ax.add_line(
                 Line2D(
-                    xdata=(tp[0], bm[0]),
-                    ydata=(tp[1], bm[1]),
+                    xdata=(tp[0] + self.jitterPos(), bm[0] + self.jitterPos()),
+                    ydata=(tp[1] + self.jitterPos(), bm[1] + self.jitterPos()),
                     linestyle="solid",
-                    linewidth=self.linewidth,
+                    linewidth=self.linewidth + self.jitterLW(),
                     color=self.fgcolour,
                     zorder=1,
                 )
@@ -391,13 +417,13 @@ class tyrImage:
                 strv = "%4.2f" % inr
                 txp = self.gRotate([tp[0], lft[1]])
                 ax.text(
-                    txp[0],
-                    txp[1],
+                    txp[0] + self.jitterPos(),
+                    txp[1] + self.jitterPos(),
                     strv,
-                    fontsize=self.fontSize,
+                    fontsize=self.fontSize + self.jitterFS(),
                     horizontalalignment="center",
                     verticalalignment="center",
-                    rotation=self.rotate * -1,
+                    rotation=self.rotate * -1 + self.jitterFR(),
                 )
                 # Make certain numbers are identical to printed version
                 self.rdata[yri][mni][0] = int(strv[0])
@@ -425,13 +451,13 @@ class tyrImage:
             strv = "%04.2f" % inr
             txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                txp[0],
-                txp[1],
+                txp[0] + self.jitterPos(),
+                txp[1] + self.jitterPos(),
                 strv,
-                fontsize=self.fontSize,
+                fontsize=self.fontSize + self.jitterFS(),
                 horizontalalignment="center",
                 verticalalignment="center",
-                rotation=self.rotate * -1,
+                rotation=self.rotate * -1 + self.jitterFR(),
             )
             mm = []
             mm.append(int(strv[0]))
@@ -461,13 +487,13 @@ class tyrImage:
             strv = "%05.2f" % inr
             txp = self.gRotate([tp[0], lft[1]])
             ax.text(
-                txp[0],
-                txp[1],
+                txp[0] + self.jitterPos(),
+                txp[1] + self.jitterPos(),
                 strv,
-                fontsize=self.fontSize,
+                fontsize=self.fontSize + self.jitterFS(),
                 horizontalalignment="center",
                 verticalalignment="center",
-                rotation=self.rotate * -1,
+                rotation=self.rotate * -1 + self.jitterFR(),
             )
             at = []
             at.append(int(strv[0]))

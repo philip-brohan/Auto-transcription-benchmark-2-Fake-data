@@ -27,6 +27,26 @@ parser.add_argument(
 parser.add_argument(
     "--rotate", help="degrees clockwise", type=float, default=None, required=False
 )
+parser.add_argument(
+    "--jitterFontRotate",
+    help="random degrees",
+    type=float,
+    default=None,
+    required=False,
+)
+parser.add_argument(
+    "--jitterFontSize", help="random points", type=float, default=None, required=False
+)
+parser.add_argument(
+    "--jitterGridPoints",
+    help="random fraction",
+    type=float,
+    default=None,
+    required=False,
+)
+parser.add_argument(
+    "--jitterLineWidth", help="random ?", type=float, default=None, required=False
+)
 args = parser.parse_args()
 if args.opdir is None:
     args.opdir = ("%s/OCR-fake") % os.getenv("SCRATCH")
