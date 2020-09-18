@@ -19,11 +19,28 @@ for idx in range(10000):
     xscale = random.normalvariate(1, 0.03)
     yscale = random.normalvariate(1, 0.03)
     rotate = random.normalvariate(0, 3)
+    jitterFontRotate = random.normalvariate(0, 3)
+    jitterFontSize = random.normalvariate(0, 1)
+    jitterGridPoints = random.normalvariate(0, 0.001)
+    jitterLineWidth = random.normalvariate(0, 0.25)
     f.write(
         (
             '../make_image_data_pair.py --opdir=%s/OCR-fake/ --docn="%04d"'
             + " --xshift=%d --yshift=%d --xscale=%f --yscale=%f"
-            + " --rotate=%f\n"
+            + " --rotate=%f --jitterFontRotate=%f --jitterFontSize=%f"
+            + " --jitterGridPoints=%f --jitterLineWidth=%f\n"
         )
-        % (os.getenv("SCRATCH"), idx, xshift, yshift, xscale, yscale, rotate)
+        % (
+            os.getenv("SCRATCH"),
+            idx,
+            xshift,
+            yshift,
+            xscale,
+            yscale,
+            rotate,
+            jitterFontRotate,
+            jitterFontSize,
+            jitterGridPoints,
+            jitterLineWidth,
+        )
     )
