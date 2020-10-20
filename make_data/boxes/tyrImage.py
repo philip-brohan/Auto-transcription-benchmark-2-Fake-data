@@ -22,6 +22,10 @@ class tyrImage:
         self.bgcolour = (1.0, 1.0, 1.0)
         self.fgcolour = (0.0, 0.0, 0.0)
         self.fontSize = 10
+        self.fontFamily = "Arial"
+        self.fontStyle = "normal"
+        self.fontWeight = "normal"
+
         # Noise parameters
         self.jitterFontSize = 0.0
         self.jitterFontRotate = 0.0
@@ -122,7 +126,12 @@ class tyrImage:
             x + self.jitterPos(),
             y + self.jitterPos(),
             strv,
-            fontsize=self.fontSize + self.jitterFS(),
+            fontdict={
+                "family": self.fontFamily,
+                "size": self.fontSize + self.jitterFS(),
+                "style": self.fontStyle,
+                "weight": self.fontWeight,
+            },
             horizontalalignment="center",
             verticalalignment="center",
             rotation=self.jitterFR(),
