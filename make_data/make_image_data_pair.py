@@ -28,6 +28,22 @@ parser.add_argument(
     "--rotate", help="degrees clockwise", type=float, default=None, required=False
 )
 parser.add_argument(
+    "--fontFamily",
+    help="Arial|FreeSans|Nafees Web Naskh|...",
+    type=str,
+    default=None,
+    required=False,
+)
+parser.add_argument(
+    "--fontSize", help="points", type=float, default=None, required=False
+)
+parser.add_argument(
+    "--fontStyle", help="normal|italic|slanted", type=str, default=None, required=False
+)
+parser.add_argument(
+    "--fontWeight", help="normal|bold|light", type=str, default=None, required=False
+)
+parser.add_argument(
     "--jitterFontRotate",
     help="random degrees",
     type=float,

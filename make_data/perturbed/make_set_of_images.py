@@ -6,6 +6,10 @@
 import os
 import random
 
+# Get the list of fonts to use
+from fonts import fontNames
+from fonts import fontScales
+
 image_dir = "%s/OCR-fake/images" % os.getenv("SCRATCH")
 
 f = open("run_mi.sh", "w+")
@@ -14,6 +18,12 @@ for idx in range(10000):
     fn = "%s/%04d.png" % (image_dir, idx)
     if os.path.exists(fn):
         continue
+    fontFamily = random.choice(fontNames)
+    fontStyle = random.choice(["normal", "italic", "oblique"])
+    fontWeight = random.choice(["normal", "bold", "light"])
+    fontSize = 12
+    if fontFamily in fontScales:
+        fontSize *= fontScales[fontFamily]
     xshift = random.randint(-10, 10)
     yshift = random.randint(-20, 20)
     xscale = random.normalvariate(1, 0.03)
@@ -28,7 +38,9 @@ for idx in range(10000):
             '../make_image_data_pair.py --opdir=%s/OCR-fake/ --docn="%04d"'
             + " --xshift=%d --yshift=%d --xscale=%f --yscale=%f"
             + " --rotate=%f --jitterFontRotate=%f --jitterFontSize=%f"
-            + " --jitterGridPoints=%f --jitterLineWidth=%f\n"
+            + " --jitterGridPoints=%f --jitterLineWidth=%f" 
+            + " --fontFamily='%s' --fontSize=%f"
+            + " --fontStyle=%s --fontWeight=%s\n"
         )
         % (
             os.getenv("SCRATCH"),
@@ -42,5 +54,9 @@ for idx in range(10000):
             jitterFontSize,
             jitterGridPoints,
             jitterLineWidth,
-        )
+            fontFamily,
+            fontSize,
+            fontStyle,
+            fontWeight,
+       )
     )

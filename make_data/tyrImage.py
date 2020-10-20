@@ -32,6 +32,9 @@ class tyrImage:
         self.monthsWidth = 0.137  # Fractional width of months row
         self.meansWidth = 0.107  # Fractional width of means row
         self.fontSize = 10
+        self.fontFamily = "Arial"
+        self.fontStyle = "normal"
+        self.fontWeight = "normal"
         self.year = 1941
         # Noise parameters
         self.jitterFontSize = 0.0
@@ -420,7 +423,12 @@ class tyrImage:
                     txp[0] + self.jitterPos(),
                     txp[1] + self.jitterPos(),
                     strv,
-                    fontsize=self.fontSize + self.jitterFS(),
+                    fontdict={
+                        "family": self.fontFamily,
+                        "size": self.fontSize + self.jitterFS(),
+                        "style": self.fontStyle,
+                        "weight": self.fontWeight,
+                    },
                     horizontalalignment="center",
                     verticalalignment="center",
                     rotation=self.rotate * -1 + self.jitterFR(),
@@ -454,7 +462,12 @@ class tyrImage:
                 txp[0] + self.jitterPos(),
                 txp[1] + self.jitterPos(),
                 strv,
-                fontsize=self.fontSize + self.jitterFS(),
+                fontdict={
+                    "family": self.fontFamily,
+                    "size": self.fontSize + self.jitterFS(),
+                    "style": self.fontStyle,
+                    "weight": self.fontWeight,
+                },
                 horizontalalignment="center",
                 verticalalignment="center",
                 rotation=self.rotate * -1 + self.jitterFR(),
@@ -490,7 +503,53 @@ class tyrImage:
                 txp[0] + self.jitterPos(),
                 txp[1] + self.jitterPos(),
                 strv,
-                fontsize=self.fontSize + self.jitterFS(),
+                fontdict={
+                    "family": self.fontFamily,
+                    "size": self.fontSize + self.jitterFS(),
+                    "style": self.fontStyle,
+                    "weight": self.fontWeight,
+                },
+                horizontalalignment="center",
+                verticalalignment="center",
+                rotation=self.rotate * -1 + self.jitterFR(),
+            )
+            mm = []
+            mm.append(int(strv[0]))
+            mm.append(int(strv[2]))
+            mm.append(int(strv[3]))
+            self.rdata[10].append(mm)
+
+    # Add the annual totals
+    def drawTotals(self, ax):
+        lft = self.leftAt(self.totalsHeight / 2)
+        self.rdata.append([])
+        for yri in range(10):
+            x = (
+                self.monthsWidth
+                + (yri + 0.5) * (1.0 - self.meansWidth - self.monthsWidth) / 10
+            )
+            tp = self.topAt(x)
+            inr = 0.0
+            for mni in range(12):
+                inr += (
+                    self.rdata[yri][mni][0]
+                    + self.rdata[yri][mni][1] / 10
+                    + self.rdata[yri][mni][2] / 100
+                )
+            if inr > 99:
+                inr = inr % 100
+            strv = "%05.2f" % inr
+            txp = self.gRotate([tp[0], lft[1]])
+            ax.text(
+                txp[0] + self.jitterPos(),
+                txp[1] + self.jitterPos(),
+                strv,
+                fontdict={
+                    "family": self.fontFamily,
+                    "size": self.fontSize + self.jitterFS(),
+                    "style": self.fontStyle,
+                    "weight": self.fontWeight,
+                },
                 horizontalalignment="center",
                 verticalalignment="center",
                 rotation=self.rotate * -1 + self.jitterFR(),
